@@ -24,7 +24,7 @@ When testing autonomous supply chain agents, continuous scraping of live news or
 ### Running Locally
 ```bash
 # Clone the repository
-git clone [https://github.com/maksim-tsi/maritime-port-sandbox.git](https://github.com/maksim-tsi/maritime-port-sandbox.git)
+git clone https://github.com/maksim-tsi/maritime-port-sandbox.git
 cd maritime-port-sandbox
 
 # Install dependencies
