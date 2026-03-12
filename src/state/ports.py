@@ -31,9 +31,26 @@ SUPPORTED_PORTS: Final[dict[str, PortConfig]] = {
         initial_available_reefer_plugs=160,
         initial_available_capacity_teu=32_000,
     ),
+    "CNSHA": PortConfig(
+        max_capacity_teu_per_day=130_000,
+        initial_yard_density_percent=60.0,
+        initial_available_reefer_plugs=650,
+        initial_available_capacity_teu=130_000,
+    ),
+    "SGSIN": PortConfig(
+        max_capacity_teu_per_day=100_000,
+        initial_yard_density_percent=60.0,
+        initial_available_reefer_plugs=500,
+        initial_available_capacity_teu=100_000,
+    ),
+    "MYPKG": PortConfig(
+        max_capacity_teu_per_day=38_000,
+        initial_yard_density_percent=60.0,
+        initial_available_reefer_plugs=190,
+        initial_available_capacity_teu=38_000,
+    ),
 }
 
 
 def get_port_config(port_code: str) -> PortConfig:
     return SUPPORTED_PORTS[port_code]
-

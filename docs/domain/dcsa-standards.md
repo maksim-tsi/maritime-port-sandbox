@@ -3,8 +3,8 @@
 As an autonomous agent developing the Maritime Port Sandbox, you must strictly adhere to the domain rules defined in this document. The sandbox emulates the **Digital Container Shipping Association (DCSA)** Track & Trace and Operational Vessel Schedule (OVS) standards, specifically focusing on terminal availability and capacity metrics.
 
 ## 1. Supported UN/LOCODEs
-In the maritime industry, locations are identified by 5-character UN/LOCODEs. For the IDWL 2026 baseline, the sandbox supports **only** the following Northern European triad. 
-
+In the maritime industry, locations are identified by 5-character UN/LOCODEs. For the IDWL 2026 baseline, the sandbox supports **only** the following ports. 
+ 
 Any request for a port outside this list must result in an `HTTP 404 Not Found`.
 
 | UN/LOCODE | City | Country | Max Capacity (Mock TEU/day) |
@@ -12,6 +12,9 @@ Any request for a port outside this list must result in an `HTTP 404 Not Found`.
 | **DEHAM** | Hamburg | Germany | 25,000 |
 | **NLRTM** | Rotterdam | Netherlands | 40,000 |
 | **BEANR** | Antwerp | Belgium | 32,000 |
+| **CNSHA** | Shanghai | China | 130,000 |
+| **SGSIN** | Singapore | Singapore | 100,000 |
+| **MYPKG** | Port Klang | Malaysia | 38,000 |
 
 *(Note: TEU stands for Twenty-foot Equivalent Unit, the standard measure of container capacity).*
 

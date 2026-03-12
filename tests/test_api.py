@@ -16,6 +16,16 @@ def test_get_port_status_response_is_dcsa_valid() -> None:
     PortStatusResponse.model_validate(resp.json(), strict=False)
 
 
+def test_sea_ports_start_normal() -> None:
+    app = create_app(port_store=InMemoryPortStore(), expose_admin_docs=False)
+    client = TestClient(app)
+
+    for port_code in ["CNSHA", "SGSIN", "MYPKG"]:
+        resp = client.get(f"/api/v1/pcs/terminals/{port_code}/status")
+        assert resp.status_code == 200
+        assert resp.json()["operationalStatus"] == "NORMAL"
+
+
 def test_admin_scenario_mutates_state() -> None:
     app = create_app(port_store=InMemoryPortStore(), expose_admin_docs=False)
     client = TestClient(app)
