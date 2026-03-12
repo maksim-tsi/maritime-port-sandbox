@@ -23,16 +23,27 @@ When testing autonomous supply chain agents, continuous scraping of live news or
 
 ### Running Locally
 ```bash
-# Clone the repository
-git clone https://github.com/maksim-tsi/maritime-port-sandbox.git
-cd maritime-port-sandbox
-
 # Install dependencies
 pip install -r requirements.txt
 
 # Start the server
 uvicorn main:app --reload --port 8000
 
+```
+
+### Developer Tooling
+```bash
+pip install -r requirements-dev.txt
+ruff check .
+mypy .
+pytest
+```
+
+### Admin Docs Visibility (Swagger/OpenAPI)
+Admin endpoints are always callable, but hidden from Swagger/OpenAPI by default.
+
+```bash
+EXPOSE_ADMIN_DOCS=1 uvicorn main:app --reload --port 8000
 ```
 
 ### Example Usage
@@ -52,8 +63,10 @@ curl -X GET http://localhost:8000/api/v1/pcs/terminals/DEHAM/status
   "operationalStatus": "NORMAL",
   "metrics": {
     "yardDensityPercent": 65.0,
-    "availableReeferPlugs": 120
-  }
+    "availableReeferPlugs": 120,
+    "availableCapacityTEU": 25000
+  },
+  "updatedAt": "2026-01-01T00:00:00Z"
 }
 
 ```
