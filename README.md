@@ -21,6 +21,13 @@ When testing autonomous supply chain agents, continuous scraping of live news or
 * Python 3.11+
 * Docker & Docker Compose (optional but recommended)
 
+### Running with Docker Compose
+```bash
+docker compose up --build -d
+```
+
+This starts the `sandbox` service on port `8001` and enables in-container hot reload for development.
+
 ### Running Locally
 ```bash
 # Install dependencies
