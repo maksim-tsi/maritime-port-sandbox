@@ -4,10 +4,16 @@ import math
 from dataclasses import replace
 from typing import Final
 
-from src.schemas.admin import ChaosScenarioType, InjectScenarioRequest, Severity
+from src.schemas.admin import (
+    ChaosScenarioType,
+    InjectScenarioRequest,
+    SetStateRequest,
+    SetStateResponse,
+    Severity,
+)
 from src.schemas.dcsa import OperationalStatus, PortStatusResponse
-from src.state.ports import get_port_config
-from src.state.store import InMemoryPortStore, PortState
+from src.state.ports import SUPPORTED_PORTS, get_port_config
+from src.state.store import SIMULATION_EPOCH_UTC, InMemoryPortStore, PortState
 
 
 class UnknownPortError(LookupError):
@@ -97,3 +103,39 @@ class PortManager:
             return self._store.mutate(port_code, apply)
         except KeyError as exc:
             raise UnknownPortError(port_code) from exc
+
+    def set_state(self, payload: SetStateRequest) -> SetStateResponse:
+        referenced_ports = set(payload.closed_ports) | set(payload.capacities.keys())
+        unknown_ports = sorted(referenced_ports - set(SUPPORTED_PORTS.keys()))
+        if unknown_ports:
+            raise UnknownPortError(unknown_ports[0])
+
+        full_state: dict[str, PortState] = {
+            port_code: PortState(
+                operational_status=OperationalStatus.NORMAL,
+                yard_density_percent=config.initial_yard_density_percent,
+                available_reefer_plugs=config.initial_available_reefer_plugs,
+                available_capacity_teu=config.initial_available_capacity_teu,
+                updated_at=SIMULATION_EPOCH_UTC,
+            )
+            for port_code, config in SUPPORTED_PORTS.items()
+        }
+
+        for port_code, requested_capacity in payload.capacities.items():
+            port_config = get_port_config(port_code)
+            bounded_capacity = min(requested_capacity, port_config.max_capacity_teu_per_day)
+            full_state[port_code] = replace(
+                full_state[port_code],
+                operational_status=OperationalStatus.NORMAL,
+                available_capacity_teu=bounded_capacity,
+            )
+
+        for port_code in payload.closed_ports:
+            full_state[port_code] = replace(
+                full_state[port_code],
+                operational_status=OperationalStatus.CLOSED,
+                available_capacity_teu=0,
+            )
+
+        self._store.overwrite_all(full_state)
+        return SetStateResponse(stateUpdated=True)
