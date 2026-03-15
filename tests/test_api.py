@@ -121,7 +121,7 @@ def test_admin_set_state_unknown_port_is_atomic_404() -> None:
 
     resp = client.post(
         "/api/v1/admin/set-state",
-        json={"closed_ports": ["DEHAM"], "capacities": {"NLRTM": 5000, "DEBRV": 8000}},
+        json={"closed_ports": ["DEHAM"], "capacities": {"NLRTM": 5000, "ZZZZZ": 8000}},
     )
     assert resp.status_code == 404
 

@@ -14,6 +14,7 @@ Any request for a port outside this list must result in an `HTTP 404 Not Found`.
 | **BEANR** | Antwerp | Belgium | 32,000 |
 | **CNSHA** | Shanghai | China | 130,000 |
 | **SGSIN** | Singapore | Singapore | 100,000 |
+| **DEBRV** | Bremerhaven | Germany | 15,000 |
 | **MYPKG** | Port Klang | Malaysia | 38,000 |
 
 *(Note: TEU stands for Twenty-foot Equivalent Unit, the standard measure of container capacity).*
