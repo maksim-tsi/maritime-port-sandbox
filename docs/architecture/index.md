@@ -24,3 +24,11 @@ src/
 │   └── admin.py          # Input models for chaos injection
 ├── core/                 # App configuration, dependency injection
 └── state/                # In-memory data store (The "Database")
+
+## 3. Runtime Host Targeting
+For multi-machine deployments in this project:
+
+1. Do not use `localhost` in examples, checks, or runbooks.
+2. Assume the sandbox is hosted on `skz-data-lv`.
+3. Resolve host/IP from `DEV_NODE_IP` in `.env` and call the API as `http://${DEV_NODE_IP}:8001/...`.
+4. Keep private IPs and secrets out of docs; store them in `.env` only.

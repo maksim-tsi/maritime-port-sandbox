@@ -6,6 +6,7 @@ from fastapi import FastAPI
 
 from src.api.admin.simulation import build_router as build_admin_router
 from src.api.public.pcs import router as pcs_router
+from src.api.public.simulation import router as simulation_router
 from src.state.store import InMemoryPortStore
 
 
@@ -31,6 +32,7 @@ def create_app(
     app.state.port_store = port_store or InMemoryPortStore()
 
     app.include_router(pcs_router)
+    app.include_router(simulation_router)
     app.include_router(build_admin_router(expose_in_openapi=expose_admin_docs_resolved))
 
     return app

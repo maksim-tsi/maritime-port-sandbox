@@ -32,4 +32,10 @@ When assigned a task, follow this exact Ralph Wiggum Loop:
 * **Validation:** Pydantic v2 (Strict mode preferred)
 * **Testing:** Pytest (100% coverage expected for core domain logic)
 
+## 5. Runtime Host Targeting (Important)
+* **Never use `localhost` in project documentation, examples, validation commands, or agent runbooks for network access.**
+* Assume the Maritime Port Sandbox runs on **`skz-data-lv`**.
+* Resolve the target IP from **`DEV_NODE_IP`** in `.env` and build URLs as `http://${DEV_NODE_IP}:8001/...`.
+* Keep private values in `.env` only (gitignored). Do not commit concrete private IPs.
+
 *End of Directives. Look at the task and begin your discovery phase.*
