@@ -43,6 +43,12 @@ SUPPORTED_PORTS: Final[dict[str, PortConfig]] = {
         initial_available_reefer_plugs=500,
         initial_available_capacity_teu=100_000,
     ),
+    "DEBRV": PortConfig(
+        max_capacity_teu_per_day=15_000,
+        initial_yard_density_percent=60.0,
+        initial_available_reefer_plugs=120,
+        initial_available_capacity_teu=15_000,
+    ),
     "MYPKG": PortConfig(
         max_capacity_teu_per_day=38_000,
         initial_yard_density_percent=60.0,

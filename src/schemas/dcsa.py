@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 from datetime import datetime
-from enum import Enum
+from enum import StrEnum
 
 from pydantic import BaseModel, ConfigDict, Field
 
 
-class OperationalStatus(str, Enum):
+class OperationalStatus(StrEnum):
     NORMAL = "NORMAL"
     RESTRICTED = "RESTRICTED"
     CLOSED = "CLOSED"

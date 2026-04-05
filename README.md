@@ -21,13 +21,23 @@ When testing autonomous supply chain agents, continuous scraping of live news or
 * Python 3.11+
 * Docker & Docker Compose (optional but recommended)
 
+### Running with Docker Compose
+```bash
+docker compose up --build -d
+```
+
+This starts the `sandbox` service on port `8001` and enables in-container hot reload for development.
+
 ### Running Locally
 ```bash
 # Install dependencies
 pip install -r requirements.txt
 
-# Start the server
-uvicorn main:app --reload --port 8000
+# Start the server (recommended)
+./scripts/run_dev.sh
+
+# Manual equivalent
+EXPOSE_ADMIN_DOCS=1 uvicorn main:app --reload --host 0.0.0.0 --port 8001
 
 ```
 
@@ -43,7 +53,7 @@ pytest
 Admin endpoints are always callable, but hidden from Swagger/OpenAPI by default.
 
 ```bash
-EXPOSE_ADMIN_DOCS=1 uvicorn main:app --reload --port 8000
+EXPOSE_ADMIN_DOCS=1 uvicorn main:app --reload --host 0.0.0.0 --port 8001
 ```
 
 ### Example Usage
@@ -51,7 +61,7 @@ EXPOSE_ADMIN_DOCS=1 uvicorn main:app --reload --port 8000
 **1. Querying Port Status (Agent View):**
 
 ```bash
-curl -X GET http://localhost:8000/api/v1/pcs/terminals/DEHAM/status
+curl -X GET http://localhost:8001/api/v1/pcs/terminals/DEHAM/status
 
 ```
 
@@ -74,7 +84,7 @@ curl -X GET http://localhost:8000/api/v1/pcs/terminals/DEHAM/status
 **2. Injecting a Disruption (Simulation Controller View):**
 
 ```bash
-curl -X POST http://localhost:8000/admin/simulation/scenario \
+curl -X POST http://localhost:8001/admin/simulation/scenario \
 -H "Content-Type: application/json" \
 -d '{"targetPort": "DEHAM", "scenarioType": "STORM_SURGE", "severity": "HIGH"}'
 

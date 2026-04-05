@@ -55,6 +55,28 @@ class InMemoryPortStore:
             self._ports[normalized] = updated
             return self._to_response(normalized, updated)
 
+    def overwrite_all(self, states: dict[str, PortState]) -> None:
+        normalized_states = {code.strip().upper(): state for code, state in states.items()}
+        with self._lock:
+            known_ports = set(self._ports.keys())
+            supplied_ports = set(normalized_states.keys())
+            if supplied_ports != known_ports:
+                unknown_ports = sorted(supplied_ports - known_ports)
+                if unknown_ports:
+                    raise KeyError(unknown_ports[0])
+                missing_ports = sorted(known_ports - supplied_ports)
+                raise KeyError(missing_ports[0])
+
+            updated_ports: dict[str, PortState] = {}
+            for port_code in sorted(known_ports):
+                self._clock = self._clock + timedelta(seconds=1)
+                updated_ports[port_code] = replace(
+                    normalized_states[port_code],
+                    updated_at=self._clock,
+                )
+
+            self._ports = updated_ports
+
     @staticmethod
     def _to_response(port_code: str, state: PortState) -> PortStatusResponse:
         return PortStatusResponse(
