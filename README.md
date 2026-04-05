@@ -23,10 +23,22 @@ When testing autonomous supply chain agents, continuous scraping of live news or
 
 ### Running with Docker Compose
 ```bash
-docker compose up --build -d
+docker compose up -d
 ```
 
 This starts the `sandbox` service on port `8001` and enables in-container hot reload for development.
+
+Check status:
+
+```bash
+docker compose ps
+```
+
+Stop the service:
+
+```bash
+docker compose down
+```
 
 ### Running Locally
 ```bash
@@ -40,6 +52,40 @@ pip install -r requirements.txt
 EXPOSE_ADMIN_DOCS=1 uvicorn main:app --reload --host 0.0.0.0 --port 8001
 
 ```
+
+### Fallback Run Mode (Without Docker)
+If Docker is not available, run the sandbox in background with `nohup`:
+
+```bash
+nohup env EXPOSE_ADMIN_DOCS=1 uvicorn main:app --host 0.0.0.0 --port 8001 > /tmp/maritime-sandbox.log 2>&1 &
+```
+
+Check process/socket and logs:
+
+```bash
+ss -ltnp | grep 8001
+tail -n 100 /tmp/maritime-sandbox.log
+```
+
+Stop the background process:
+
+```bash
+pkill -f "uvicorn main:app --host 0.0.0.0 --port 8001"
+```
+
+### Verify API Availability
+In multi-machine development, do not use `localhost` for API checks.
+Use `DEV_NODE_IP` from `.env` (the sandbox host), expected to point to `skz-data-lv` in this project setup.
+
+```bash
+set -a && source .env && set +a
+curl -i --max-time 10 "http://${DEV_NODE_IP}:8001/docs"
+curl -i --max-time 10 "http://${DEV_NODE_IP}:8001/openapi.json"
+```
+
+Success criteria:
+* `/docs`: `HTTP 200` (or `307` redirect to `/docs/`, followed by `200`)
+* `/openapi.json`: `HTTP 200`
 
 ### Developer Tooling
 ```bash
@@ -56,12 +102,17 @@ Admin endpoints are always callable, but hidden from Swagger/OpenAPI by default.
 EXPOSE_ADMIN_DOCS=1 uvicorn main:app --reload --host 0.0.0.0 --port 8001
 ```
 
+## Security Note (Public Repository)
+Do not commit private hosts, tokens, or credentials to docs or source files.
+Store all sensitive values in `.env` (gitignored) and inject them at runtime.
+
 ### Example Usage
 
 **1. Querying Port Status (Agent View):**
 
 ```bash
-curl -X GET http://localhost:8001/api/v1/pcs/terminals/DEHAM/status
+set -a && source .env && set +a
+curl -X GET "http://${DEV_NODE_IP}:8001/api/v1/pcs/terminals/DEHAM/status"
 
 ```
 
@@ -84,7 +135,8 @@ curl -X GET http://localhost:8001/api/v1/pcs/terminals/DEHAM/status
 **2. Injecting a Disruption (Simulation Controller View):**
 
 ```bash
-curl -X POST http://localhost:8001/admin/simulation/scenario \
+set -a && source .env && set +a
+curl -X POST "http://${DEV_NODE_IP}:8001/admin/simulation/scenario" \
 -H "Content-Type: application/json" \
 -d '{"targetPort": "DEHAM", "scenarioType": "STORM_SURGE", "severity": "HIGH"}'
 
